@@ -546,7 +546,7 @@ Proceed at your own risk."
   if [ $BUILD_OSG ] && ! [ -e "$DEPENDENCIES"/osg ] ; then git clone -b 3.4 https://github.com/OpenMW/osg.git "$DEPENDENCIES"/osg --depth 1; fi
   if [ $BUILD_BULLET ] && ! [ -e "$DEPENDENCIES"/bullet ]; then git clone https://github.com/bulletphysics/bullet3.git "$DEPENDENCIES"/bullet; fi # cannot --depth 1 because we check out specific revision
   ! [ -e "$DEPENDENCIES"/raknet ] && git clone https://github.com/TES3MP/RakNet.git "$DEPENDENCIES"/raknet --depth 1
-  ! [ -e "$KEEPERS"/CoreScripts ] && git clone -b "${TARGET_COMMIT:-master}" https://github.com/TES3MP/CoreScripts.git "$KEEPERS"/CoreScripts
+  ! [ -e "$KEEPERS"/server ] && git clone -b "${TARGET_COMMIT:-master}" https://github.com/TES3MP/CoreScripts.git "$KEEPERS"/server
 
   #COPY STATIC SERVER AND CLIENT CONFIGS
   echo -e "\n>> Copying server and client configs to their permanent place"
@@ -554,7 +554,7 @@ Proceed at your own risk."
 
   #SET home VARIABLE IN tes3mp-server-default.cfg
   echo -e "\n>> Autoconfiguring"
-  sed -i "s|home = .*|home = $KEEPERS/CoreScripts|g" "${KEEPERS}"/tes3mp-server-default.cfg
+  sed -i "s|home = .*|home = $KEEPERS/server|g" "${KEEPERS}"/tes3mp-server-default.cfg
 
   #DIRTY HACKS
   echo -e "\n>> Applying some dirty hacks"
@@ -614,7 +614,7 @@ Proceed at your own risk."
     TARGET_COMMIT="stable"
 
     #SWITCH TO THE STABLE BRANCH ON CORESCRIPTS AS WELL
-    cd "$KEEPERS"/CoreScripts
+    cd "$KEEPERS"/server
     git stash
     git pull
     git checkout "$TES3MP_STABLE_VERSION"
@@ -644,7 +644,7 @@ if [ $UPGRADE ]; then
   #CHECK IF THERE ARE CHANGES IN THE CORESCRIPTS GIT REMOTE
   if [ $HANDLE_CORESCRIPTS ]; then
     echo -e "\n>> Checking the CoreScripts git repository for changes"
-    cd "$KEEPERS"/CoreScripts
+    cd "$KEEPERS"/server
     git remote update
     if [ "$(git rev-parse @)" != "$(git rev-parse @{u})" ]; then
       echo -e "\nNEW CHANGES on the CoreScripts git repository"
@@ -688,14 +688,14 @@ fi
 if [ $HANDLE_CORESCRIPTS ]; then
   if [ $UPGRADE ]; then
     echo -e "\n>> Pulling CoreScripts code changes from git"
-    cd "$KEEPERS"/CoreScripts
+    cd "$KEEPERS"/server
     git stash
     git pull
     cd "$BASE"
   fi
 
   if [ $BUILD_COMMIT ]; then
-    cd "$KEEPERS"/CoreScripts
+    cd "$KEEPERS"/server
     if [[ "$TARGET_COMMIT" == "" || "$TARGET_COMMIT" == "latest" ]]; then
       echo -e "\nChecking out the latest CoreScripts commit."
       git stash
@@ -766,13 +766,13 @@ if [ $REBUILD ]; then
     if [[ "$TARGET_VERSION_STRING" == "" || "$TARGET_VERSION_STRING" == "latest" ]]; then
       echo -e "\nUsing the upstream version string"
       git stash
-      cd "$KEEPERS"/CoreScripts
+      cd "$KEEPERS"/server
       git stash
       cd "$CODE"
     else
       echo -e "\nUsing \"$TARGET_VERSION_STRING\" as version string"
       sed -i "s|#define TES3MP_VERSION .*|#define TES3MP_VERSION \"$TARGET_VERSION_STRING\"|g" ./components/openmw-mp/Version.hpp
-      sed -i "s|    if tes3mp.GetServerVersion() ~= .*|    if tes3mp.GetServerVersion() ~= \"$TARGET_VERSION_STRING\" then|g" "$KEEPERS"/CoreScripts/scripts/server.lua
+      sed -i "s|    if tes3mp.GetServerVersion() ~= .*|    if tes3mp.GetServerVersion() ~= \"$TARGET_VERSION_STRING\" then|g" "$KEEPERS"/server/scripts/server.lua
     fi
 
     cd "$BASE"
@@ -1017,8 +1017,8 @@ if [ $MAKE_PACKAGE ]; then
 
   #COPY USEFUL FILES
   echo -e "\nCopying useful files"
-  cp -r "$KEEPERS"/{CoreScripts,*.cfg} "$PACKAGE_TMP"
-  sed -i "s|home = .*|home = ./CoreScripts|g" "$PACKAGE_TMP"/tes3mp-server-default.cfg
+  cp -r "$KEEPERS"/{server,*.cfg} "$PACKAGE_TMP"
+  sed -i "s|home = .*|home = ./server|g" "$PACKAGE_TMP"/tes3mp-server-default.cfg
 
   #COPY WHATEVER EXTRA FILES ARE CURRENTLY PRESENT
   if [ -d "$EXTRA" ]; then
@@ -1060,7 +1060,7 @@ if [ $MAKE_PACKAGE ]; then
   PACKAGE_DISTRO="$DISTRO"
   PACKAGE_VERSION=$(cat "$CODE"/components/openmw-mp/Version.hpp | grep TES3MP_VERSION | awk -F'"' '{print $2}')
   PACKAGE_COMMIT=$(git --git-dir=$CODE/.git rev-parse @ | head -c10)
-  PACKAGE_COMMIT_SCRIPTS=$(git --git-dir=$KEEPERS/CoreScripts/.git rev-parse @ | head -c10)
+  PACKAGE_COMMIT_SCRIPTS=$(git --git-dir=$KEEPERS/server/.git rev-parse @ | head -c10)
 
   PACKAGE_NAME="$PACKAGE_PREFIX-$PACKAGE_SYSTEM-$PACKAGE_ARCH-release-$PACKAGE_VERSION-$PACKAGE_COMMIT-$PACKAGE_COMMIT_SCRIPTS"
   PACKAGE_DATE="$(date +"%Y-%m-%d")"
@@ -1090,12 +1090,12 @@ if [[ "$ARGS" = 'tes3mp-server' ]]; then
         LOADING_FROM_HOME=true
     fi
     if [[ $LOADING_FROM_HOME ]]; then
-        if [[ -d "$TES3MP_HOME"/CoreScripts ]]; then
+        if [[ -d "$TES3MP_HOME"/server ]]; then
             echo -e "Loading CoreScripts folder from the home directory"
         else
             echo -e "CoreScripts folder not found in home directory, copying from package directory"
-            cp -rf "$GAMEDIR"/CoreScripts/ "$TES3MP_HOME"/
-            sed -i "s|home = .*|home = $TES3MP_HOME/CoreScripts |g" "$TES3MP_HOME"/tes3mp-server.cfg
+            cp -rf "$GAMEDIR"/server/ "$TES3MP_HOME"/
+            sed -i "s|home = .*|home = $TES3MP_HOME/server |g" "$TES3MP_HOME"/tes3mp-server.cfg
         fi
     fi
 else
