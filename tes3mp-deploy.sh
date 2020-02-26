@@ -2,7 +2,7 @@
 
 set -e
 
-VERSION="2.16.1"
+VERSION="3.0.0"
 
 TES3MP_STABLE_VERSION="0.7.0"
 TES3MP_STABLE_VERSION_FILE="0.44.0\n292536439eeda58becdb7e441fe2e61ebb74529e"
@@ -35,10 +35,10 @@ Options:
 
 Peculiar options:
   --debug-symbols                Build with debug symbols
-  --skip-pkgs                    Skip package installation
   --cmake-local                  Tell CMake to look in /usr/local/ for libraries
   --handle-corescripts           Handle CoreScripts, pulls and branch switches
   --handle-version-file          Handle version file by overwritting it with a persistent one
+  --install-dependency-pkgs      Install distro specific dependency packages
 
 Please report bugs in the GitHub issue page or directly on the TES3MP Discord.
 https://github.com/GrimKriegor/TES3MP-deploy
@@ -62,7 +62,7 @@ function run_in_container() {
 
   #DEFAULTS
   CONTAINER_FOLDER_NAME="container"
-  CONTAINER_DEFAULT_ARGS="--skip-pkgs --cmake-local"
+  CONTAINER_DEFAULT_ARGS="--cmake-local"
 
   #DETERMINE FORGE IMAGE
   case $CONTAINER_ARCHITECTURE in
@@ -207,9 +207,9 @@ else
       DEBUG_SYMBOLS=true
     ;;
 
-    #SKIP PACKAGE INSTALLATION
-    --skip-pkgs )
-      SKIP_PACKAGE_INSTALL=true
+    #DISTRO PACKAGE INSTALLATION
+    --install-dependency-pkgs )
+      DISTRO_PACKAGE_INSTALL=true
     ;;
 
     #TELL CMAKE TO LOOK FOR DEPENDENCIES ON /USR/LOCAL/
@@ -334,7 +334,7 @@ if [ $INSTALL ]; then
   mkdir -p "$DEVELOPMENT" "$KEEPERS" "$DEPENDENCIES"
 
   #CHECK DISTRO AND INSTALL DEPENDENCIES
-  if [ ! $SKIP_PACKAGE_INSTALL ]; then
+  if [ $DISTRO_PACKAGE_INSTALL ]; then
   echo -e "\n>> Checking which GNU/Linux distro is installed"
   case $DISTRO in
 
@@ -376,126 +376,8 @@ if [ $INSTALL ]; then
         BUILD_BULLET=true
     ;;
 
-    "arch" | "parabola" | "manjarolinux" )
-        echo -e "You seem to be running either Arch Linux, Parabola GNU/Linux-libre or Manjaro"
-        sudo pacman -Sy --needed unzip \
-          wget \
-          git \
-          cmake \
-          boost \
-          openal \
-          openscenegraph \
-          mygui \
-          bullet \
-          qt5-base \
-          ffmpeg \
-          sdl2 \
-          unshield \
-          libxkbcommon-x11 \
-          ncurses \
-          luajit
-        if [ ! -d "/usr/share/licenses/gcc-libs-multilib/" ]; then
-              sudo pacman -S --needed gcc-libs
-        fi
-    ;;
-
-    "ubuntu" | "linuxmint" | "elementary" )
-        echo -e "You seem to be running Ubuntu, Mint or elementary OS"
-        echo -e "
-The OpenMW PPA repository needs to be enabled
-https://wiki.openmw.org/index.php?title=Development_Environment_Setup#Ubuntu
-Type YES if you want the script to do it automatically
-If you already have it enabled or want to do it manually,
-press ENTER to continue"
-        read INPUT
-        if [ "$INPUT" == "YES" ]; then
-              echo -e "\nEnabling the OpenMW PPA repository..."
-              sudo add-apt-repository ppa:openmw/openmw
-              echo -e "Done!"
-        fi
-        sudo apt-get update
-        sudo apt-get install \
-          unzip \
-          wget \
-          git \
-          cmake \
-          libopenal-dev \
-          qt5-default \
-          libqt5opengl5-dev \
-          libopenthreads-dev \
-          libopenscenegraph-3.4-dev \
-          libsdl2-dev \
-          libqt4-dev \
-          libboost-filesystem-dev \
-          libboost-thread-dev \
-          libboost-program-options-dev \
-          libboost-system-dev \
-          libavcodec-dev \
-          libavformat-dev \
-          libavutil-dev \
-          libswscale-dev \
-          libswresample-dev \
-          libmygui-dev \
-          libunshield-dev \
-          cmake \
-          build-essential \
-          libqt4-opengl-dev \
-          g++ \
-          libncurses5-dev \
-          luajit \
-          libluajit-5.1-dev \
-          liblua5.1-0-dev
-        sudo sed -i "s,# deb-src,deb-src,g" /etc/apt/sources.list
-        sudo apt-get build-dep bullet
-        BUILD_BULLET=true
-    ;;
-
-    "fedora" )
-        echo -e "You seem to be running Fedora"
-        echo -e "
-Fedora users are required to enable the RPMFusion FREE and NON-FREE repositories
-https://wiki.openmw.org/index.php?title=Development_Environment_Setup#Fedora_Workstation
-Type YES if you want the script to do it automatically
-If you already have it enabled or want to do it manually,
-press ENTER to continue"
-        read INPUT
-        if [ "$INPUT" == "YES" ]; then
-              echo -e "\nEnabling RPMFusion..."
-              su -c 'dnf install \
-                http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-                http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'
-              echo -e "Done!"
-        fi
-        sudo dnf --refresh groupinstall development-tools
-        sudo dnf --refresh install \
-          unzip \
-          wget \
-          cmake \
-          openal-devel \
-          OpenSceneGraph-qt-devel \
-          SDL2-devel \
-          qt5-devel \
-          boost-filesystem \
-          git \
-          boost-thread \
-          boost-program-options \
-          boost-system \
-          ffmpeg-devel \
-          ffmpeg-libs \
-          bullet-devel \
-          gcc-c++ \
-          mygui-devel \
-          unshield-devel \
-          tinyxml-devel \
-          cmake \
-          ncurses-c++-libs \
-          ncurses-devel \
-          luajit-devel
-        BUILD_BULLET=true
-    ;;
-
     *)
-        echo -e "Your GNU/Linux distro is not supported yet, press ENTER to continue without installing dependency packages"
+        echo -e "Your GNU/Linux distro is not supported, press ENTER to continue without installing dependency packages"
         read
     ;;
 
@@ -955,7 +837,7 @@ if [ $MAKE_PACKAGE ]; then
     "libRakNetLibStatic.a" \
     "libtinfo.so" \
     "liblua5.1.so" \
-   )
+  )
 
   LIBRARIES_EXTRA=( \
     "libpng16.so" \
