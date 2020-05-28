@@ -357,6 +357,7 @@ if [ $INSTALL ]; then
           libboost-thread-dev \
           libboost-program-options-dev \
           libboost-system-dev \
+          libboost-iostreams-dev \
           libavcodec-dev \
           libavformat-dev \
           libavutil-dev \
@@ -430,6 +431,7 @@ press ENTER to continue"
           libboost-thread-dev \
           libboost-program-options-dev \
           libboost-system-dev \
+          libboost-iostreams-dev \
           libavcodec-dev \
           libavformat-dev \
           libavutil-dev \
@@ -480,6 +482,7 @@ press ENTER to continue"
           boost-thread \
           boost-program-options \
           boost-system \
+          boost-iostreams \
           ffmpeg-devel \
           ffmpeg-libs \
           bullet-devel \
@@ -927,6 +930,7 @@ if [ $MAKE_PACKAGE ]; then
     "libboost_program_options.so" \
     "libboost_system.so" \
     "libboost_thread.so" \
+    "libboost_iostreams.so" \
     "libBulletCollision.so" \
     "libbz2.so" \
     "libLinearMath.so" \
