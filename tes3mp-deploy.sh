@@ -793,6 +793,8 @@ if [ $REBUILD ]; then
       -DOPENTHREADS_LIBRARY="${OSG_LOCATION}"/build/lib/libOpenThreads.so \
       -DOSG_INCLUDE_DIR="${OSG_LOCATION}"/include \
       -DOSG_LIBRARY="${OSG_LOCATION}"/build/lib/libosg.so \
+      -DOSGSHADOW_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSGSHADOW_LIBRARY="${OSG_LOCATION}"/build/lib/libosgShadow.so \
       -DOSGANIMATION_INCLUDE_DIR="${OSG_LOCATION}"/include \
       -DOSGANIMATION_LIBRARY="${OSG_LOCATION}"/build/lib/libosgAnimation.so \
       -DOSGDB_INCLUDE_DIR="${OSG_LOCATION}"/include \
@@ -937,6 +939,7 @@ if [ $MAKE_PACKAGE ]; then
     "libosgGA.so" \
     "libosgParticle.so" \
     "libosg.so" \
+    "libosgShadow.so" \
     "libosgText.so" \
     "libosgUtil.so" \
     "libosgViewer.so" \
