@@ -373,6 +373,7 @@ if [ $INSTALL ]; then
           libluajit-5.1-dev \
           liblua5.1-0-dev
         sudo sed -i "s,# deb-src,deb-src,g" /etc/apt/sources.list
+        sudo apt-get update
         sudo apt-get build-dep bullet
         BUILD_BULLET=true
     ;;
@@ -448,6 +449,7 @@ press ENTER to continue"
           libluajit-5.1-dev \
           liblua5.1-0-dev
         sudo sed -i "s,# deb-src,deb-src,g" /etc/apt/sources.list
+        sudo apt-get update
         sudo apt-get build-dep bullet
         BUILD_BULLET=true
     ;;
