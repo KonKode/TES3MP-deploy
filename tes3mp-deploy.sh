@@ -342,36 +342,35 @@ if [ $INSTALL ]; then
         echo -e "You seem to be running Debian or Devuan"
         sudo apt-get update
         sudo apt-get install \
-          unzip \
-          wget \
-          git \
+          build-essential \
           cmake \
-          libopenal-dev \
-          qt5-default \
-          libqt5opengl5-dev \
-          libopenthreads-dev \
-          libopenscenegraph-3.4-dev \
-          libsdl2-dev \
-          libqt4-dev \
-          libboost-filesystem-dev \
-          libboost-thread-dev \
-          libboost-program-options-dev \
-          libboost-system-dev \
-          libboost-iostreams-dev \
+          g++ \
+          git \
           libavcodec-dev \
           libavformat-dev \
           libavutil-dev \
-          libswscale-dev \
-          libswresample-dev \
-          libmygui-dev \
-          libunshield-dev \
-          cmake \
-          build-essential \
-          libqt4-opengl-dev \
-          g++ \
-          libncurses5-dev \
+          libboost-filesystem-dev \
+          libboost-iostreams-dev \
+          libboost-program-options-dev \
+          libboost-system-dev \
+          libboost-thread-dev \
+          liblua5.1-0-dev \
           libluajit-5.1-dev \
-          liblua5.1-0-dev
+          libmygui-dev \
+          libncurses5-dev \
+          libopenal-dev \
+          libopenscenegraph-3.4-dev \
+          libopenthreads-dev \
+          libqt4-dev \
+          libqt4-opengl-dev \
+          libqt5opengl5-dev \
+          libsdl2-dev \
+          libswresample-dev \
+          libswscale-dev \
+          libunshield-dev \
+          qt5-default \
+          unzip \
+          wget
         sudo sed -i "s,# deb-src,deb-src,g" /etc/apt/sources.list
         sudo apt-get update
         sudo apt-get build-dep bullet
@@ -381,21 +380,21 @@ if [ $INSTALL ]; then
     "arch" | "parabola" | "manjarolinux" )
         echo -e "You seem to be running either Arch Linux, Parabola GNU/Linux-libre or Manjaro"
         sudo pacman -Sy --needed unzip \
-          wget \
-          git \
-          cmake \
           boost \
+          bullet \
+          cmake \
+          ffmpeg \
+          git \
+          libxkbcommon-x11 \
+          luajit \
+          mygui \
+          ncurses \
           openal \
           openscenegraph \
-          mygui \
-          bullet \
           qt5-base \
-          ffmpeg \
           sdl2 \
           unshield \
-          libxkbcommon-x11 \
-          ncurses \
-          luajit
+          wget
         if [ ! -d "/usr/share/licenses/gcc-libs-multilib/" ]; then
               sudo pacman -S --needed gcc-libs
         fi
@@ -417,37 +416,36 @@ press ENTER to continue"
         fi
         sudo apt-get update
         sudo apt-get install \
-          unzip \
-          wget \
-          git \
+          build-essential \
           cmake \
-          libopenal-dev \
-          qt5-default \
-          libqt5opengl5-dev \
-          libopenthreads-dev \
-          libopenscenegraph-3.4-dev \
-          libsdl2-dev \
-          libqt4-dev \
-          libboost-filesystem-dev \
-          libboost-thread-dev \
-          libboost-program-options-dev \
-          libboost-system-dev \
-          libboost-iostreams-dev \
+          g++ \
+          git \
           libavcodec-dev \
           libavformat-dev \
           libavutil-dev \
-          libswscale-dev \
-          libswresample-dev \
-          libmygui-dev \
-          libunshield-dev \
-          cmake \
-          build-essential \
-          libqt4-opengl-dev \
-          g++ \
-          libncurses5-dev \
-          luajit \
+          libboost-filesystem-dev \
+          libboost-iostreams-dev \
+          libboost-program-options-dev \
+          libboost-system-dev \
+          libboost-thread-dev \
+          liblua5.1-0-dev \
           libluajit-5.1-dev \
-          liblua5.1-0-dev
+          libmygui-dev \
+          libncurses5-dev \
+          libopenal-dev \
+          libopenscenegraph-3.4-dev \
+          libopenthreads-dev \
+          libqt4-dev \
+          libqt4-opengl-dev \
+          libqt5opengl5-dev \
+          libsdl2-dev \
+          libswresample-dev \
+          libswscale-dev \
+          libunshield-dev \
+          luajit \
+          qt5-default \
+          unzip \
+          wget
         sudo sed -i "s,# deb-src,deb-src,g" /etc/apt/sources.list
         sudo apt-get update
         sudo apt-get build-dep bullet
@@ -472,30 +470,29 @@ press ENTER to continue"
         fi
         sudo dnf --refresh groupinstall development-tools
         sudo dnf --refresh install \
-          unzip \
-          wget \
-          cmake \
-          openal-devel \
           OpenSceneGraph-qt-devel \
           SDL2-devel \
-          qt5-devel \
           boost-filesystem \
-          git \
-          boost-thread \
+          boost-iostreams \
           boost-program-options \
           boost-system \
-          boost-iostreams \
+          boost-thread \
+          bullet-devel \
+          cmake \
           ffmpeg-devel \
           ffmpeg-libs \
-          bullet-devel \
           gcc-c++ \
+          git \
+          luajit-devel \
           mygui-devel \
-          unshield-devel \
-          tinyxml-devel \
-          cmake \
           ncurses-c++-libs \
           ncurses-devel \
-          luajit-devel
+          openal-devel \
+          qt5-devel \
+          tinyxml-devel \
+          unshield-devel \
+          unzip \
+          wget
         BUILD_BULLET=true
     ;;
 
@@ -796,10 +793,6 @@ if [ $REBUILD ]; then
     CMAKE_PARAMS="$CMAKE_PARAMS \
       -DOPENTHREADS_INCLUDE_DIR="${OSG_LOCATION}"/include \
       -DOPENTHREADS_LIBRARY="${OSG_LOCATION}"/build/lib/libOpenThreads.so \
-      -DOSG_INCLUDE_DIR="${OSG_LOCATION}"/include \
-      -DOSG_LIBRARY="${OSG_LOCATION}"/build/lib/libosg.so \
-      -DOSGSHADOW_INCLUDE_DIR="${OSG_LOCATION}"/include \
-      -DOSGSHADOW_LIBRARY="${OSG_LOCATION}"/build/lib/libosgShadow.so \
       -DOSGANIMATION_INCLUDE_DIR="${OSG_LOCATION}"/include \
       -DOSGANIMATION_LIBRARY="${OSG_LOCATION}"/build/lib/libosgAnimation.so \
       -DOSGDB_INCLUDE_DIR="${OSG_LOCATION}"/include \
@@ -810,12 +803,16 @@ if [ $REBUILD ]; then
       -DOSGGA_LIBRARY="${OSG_LOCATION}"/build/lib/libosgGA.so \
       -DOSGPARTICLE_INCLUDE_DIR="${OSG_LOCATION}"/include \
       -DOSGPARTICLE_LIBRARY="${OSG_LOCATION}"/build/lib/libosgParticle.so \
+      -DOSGSHADOW_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSGSHADOW_LIBRARY="${OSG_LOCATION}"/build/lib/libosgShadow.so \
       -DOSGTEXT_INCLUDE_DIR="${OSG_LOCATION}"/include \
       -DOSGTEXT_LIBRARY="${OSG_LOCATION}"/build/lib/libosgText.so\
       -DOSGUTIL_INCLUDE_DIR="${OSG_LOCATION}"/include \
       -DOSGUTIL_LIBRARY="${OSG_LOCATION}"/build/lib/libosgUtil.so \
       -DOSGVIEWER_INCLUDE_DIR="${OSG_LOCATION}"/include \
-      -DOSGVIEWER_LIBRARY="${OSG_LOCATION}"/build/lib/libosgViewer.so"
+      -DOSGVIEWER_LIBRARY="${OSG_LOCATION}"/build/lib/libosgViewer.so \
+      -DOSG_INCLUDE_DIR="${OSG_LOCATION}"/include \
+      -DOSG_LIBRARY="${OSG_LOCATION}"/build/lib/libosg.so"
   fi
 
   if [ $BUILD_BULLET ]; then
@@ -925,32 +922,32 @@ if [ $MAKE_PACKAGE ]; then
    )
 
   LIBRARIES_OPENMW=( \
+    "libBulletCollision.so" \
+    "libLinearMath.so" \
+    "libMyGUIEngine.so" \
+    "libOpenThreads.so" \
+    "libSDL2" \
     "libavcodec.so" \
     "libavformat.so" \
     "libavutil.so" \
     "libboost_filesystem.so" \
+    "libboost_iostreams.so" \
     "libboost_program_options.so" \
     "libboost_system.so" \
     "libboost_thread.so" \
-    "libboost_iostreams.so" \
-    "libBulletCollision.so" \
     "libbz2.so" \
-    "libLinearMath.so" \
-    "libMyGUIEngine.so" \
     "libopenal.so" \
-    "libOpenThreads.so" \
+    "libosg.so" \
     "libosgAnimation.so" \
     "libosgDB.so" \
     "libosgFX.so" \
     "libosgGA.so" \
     "libosgParticle.so" \
-    "libosg.so" \
     "libosgShadow.so" \
     "libosgText.so" \
     "libosgUtil.so" \
     "libosgViewer.so" \
     "libosgWidget.so" \
-    "libSDL2" \
     "libswresample.so" \
     "libswscale.so" \
     "libts.so" \
@@ -962,19 +959,19 @@ if [ $MAKE_PACKAGE ]; then
 
   LIBRARIES_TES3MP=( \
     "libRakNetLibStatic.a" \
-    "libtinfo.so" \
     "liblua5.1.so" \
+    "libtinfo.so" \
    )
 
   LIBRARIES_EXTRA=( \
-    "libpng16.so" \
     "libpng12.so" \
+    "libpng16.so" \
   )
 
   LIBRARIES_SERVER=( \
-    "libboost_system.so" \
     "libboost_filesystem.so" \
     "libboost_program_options.so" \
+    "libboost_system.so" \
     "liblua5.1.so" \
   )
 
