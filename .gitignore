@@ -1,2 +1,7 @@
-container*
 .serveronly
+build.log
+build/
+code/
+container*
+dependencies/
+keepers/
