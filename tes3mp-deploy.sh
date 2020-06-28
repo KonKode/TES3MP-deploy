@@ -930,6 +930,7 @@ if [ $MAKE_PACKAGE ]; then
     "libosgUtil.so" \
     "libosgViewer.so" \
     "libosgWidget.so" \
+    "libsndio.so" \
     "libswresample.so" \
     "libswscale.so" \
     "libts.so" \
