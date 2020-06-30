@@ -766,6 +766,7 @@ if [ $REBUILD ]; then
   CMAKE_PARAMS="-Wno-dev \
       -DCMAKE_BUILD_TYPE=Release \
       -DBUILD_OPENCS=OFF \
+      -DBUILD_NIFTEST=OFF \
       -DDESIRED_QT_VERSION=5 \
       -DRakNet_INCLUDES="${RAKNET_LOCATION}"/include \
       -DRakNet_LIBRARY_DEBUG="${RAKNET_LOCATION}"/build/lib/libRakNetLibStatic.a \
